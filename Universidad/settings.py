@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'Universidad.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///Proyecto.db',
-        conn_max_age=600
+        conn_max_age=600,
         ssl_require=True if 'DATABASE_URL' in os.environ else False
     )
 }
