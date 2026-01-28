@@ -1,0 +1,140 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+
+&nbsp;
+<br>
+&nbsp;
+<br>
+<div class="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="titlepage text_align_left">
+                    <h2>Nuevo Curso</h2>
+                </div>
+                <form enctype="multipart/form-data" action="/guardarCursos" method="post" id="frm_nuevo_curso">
+                    {% csrf_token %}
+
+                    <b>Instructor:</b><br>
+                    <select name="instructor" id="instructor" class="form-control" required>
+                        {% for instructor in instructores %}
+                            <option value="{{ instructor.id }}">
+                                {{ instructor.apellidos }} {{ instructor.nombres }} - {{ instructor.titulo }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <br>
+
+                    <b>Nombre:</b> <br>
+                    <input type="text" class="form-control"
+                           placeholder="Ingrese el nombre"
+                           name="nombre" id="nombre"> <br>
+                    
+                    <b>Area:</b> <br>
+                    <select name="Area" id="Area" class="form-control">
+                        <option value="Tecnologia">Tecnologia</option>
+                        <option value="Administracion">Administracion</option>
+                        <option value="Idiomas">Idiomas</option>
+                    </select>
+
+                    <b>Duracion:</b><br>
+                    <input type="number" class="form-control"
+                           placeholder="Ingrese la duracion"
+                           name="Duracion" id="Duracion"> <br>
+
+                    <b>Cupo:</b><br>
+                    <input type="number" class="form-control"
+                           placeholder="Ingrese el Cupo"
+                           name="Cupo" id="Cupo"> <br>
+
+                    <b>Estado:</b> <br>
+                    <select name="estado" id="estado" class="form-control">
+                        <option value="Activo">Activo</option>
+                        <option value="Inactivo">Inactivo</option>
+                    </select>
+                    <br>
+
+                    <div class="text-center">
+                        <button class="btn btn-dark" type="submit">
+                            <i class="fa fa-pencil"></i>
+                            Guardar
+                        </button>
+                        <br><br>
+                        <a href="/indexCurso" class="btn btn-dark">
+                            <i class="fa fa-times"></i>
+                            Cancelar y Volver
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+//  MÉTODO PERSONALIZADO → SOLO LETRAS
+$.validator.addMethod("lettersOnly", function (value, element) {
+    return this.optional(element) || /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(value);
+});
+
+$(document).ready(function () {
+
+    $("#frm_nuevo_curso").validate({
+        rules: {
+            nombre: {
+                required: true,
+                lettersOnly: true
+            },
+            Area: {
+                required: true
+            },
+            Duracion: {
+                required: true,
+                digits: true,
+                min: 1,
+                max: 200
+            },
+            Cupo: {
+                required: true,
+                digits: true,
+                min: 1,
+                max: 20
+            },
+            estado: {
+                required: true
+            }
+        },
+        messages: {
+            nombre: {
+                required: "Por favor ingrese el nombre del curso",
+                lettersOnly: "El nombre solo debe contener letras"
+            },
+            Area: {
+                required: "Seleccione un área"
+            },
+            Duracion: {
+                required: "Ingrese la duración",
+                digits: "Solo números enteros",
+                min: "La duración mínima es 1 hora",
+                max: "La duración máxima es 200 horas"
+            },
+            Cupo: {
+                required: "Ingrese el cupo",
+                digits: "Solo números",
+                min: "El cupo debe ser mayor a 0",
+                max: "El cupo máximo es 20 "
+            },
+            estado: {
+                required: "Seleccione el estado"
+            }
+        },
+        errorClass: "text-danger",
+        errorElement: "small"
+    });
+});
+</script>
+
+
+
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+
+&nbsp;
+<br>
+&nbsp;
+<br>
+<div class="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="titlepage text_align_left">
+                    <h2>Nueva Matricula</h2>
+                </div>
+                <form enctype="multipart/form-data" action="/guardarMatriculas" method="post" id="frm_nueva_matricula">
+                    {% csrf_token %}
+
+                    <b>Nombre:</b> <br>
+                    <input type="text" class="form-control"
+                           placeholder="Ingrese el nombre"
+                           name="Nombre" id="Nombre"> <br>
+
+                    <b>Identidad:</b> <br>
+                    <input type="text" class="form-control"
+                           placeholder="Ingrese la identidad"
+                           name="identidad" id="identidad"> <br>
+
+                    <b>Fecha Matricula:</b><br>
+                    <input type="date" class="form-control"
+                           placeholder="Ingrese el fecha_Matricula"
+                           name="fecha_Matricula" id="fecha_Matricula"> <br>
+
+                    <b>Curso Matricula</b><br>
+                    <select name="Curso_Matricula" class="form-control" required>
+                        {% for c in cursos %}
+                            <option value="{{ c.id }}">
+                                {{ c.nombre }} - {{ c.Area }} (Cupo: {{ c.Cupo }})
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <br>
+
+                    <div class="text-center">
+                        <button class="btn btn-dark" type="submit">
+                            <i class="fa fa-pencil"></i>
+                            Guardar
+                        </button>
+                        <br><br>
+                        <a href="/indexMatricula" class="btn btn-dark">
+                            <i class="fa fa-times"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+
+    // MÉTODO PERSONALIZADO SOLO LETRAS
+    $.validator.addMethod("lettersOnly", function (value, element) {
+        return this.optional(element) || /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(value);
+    });
+
+    // MÉTODO PERSONALIZADO FECHA NO FUTURA
+    $.validator.addMethod("notFutureDate", function (value, element) {
+        if (!value) return true;
+        var today = new Date();
+        var inputDate = new Date(value);
+        today.setHours(0,0,0,0); // ignorar horas
+        return inputDate <= today;
+    }, "La fecha no puede ser posterior a hoy");
+
+    $("#frm_nueva_matricula").validate({
+        rules: {
+            Nombre: {
+                required: true,
+                lettersOnly: true
+            },
+            identidad: {
+                required: true,
+                digits: true,
+                minlength: 10,
+                maxlength: 10
+            },
+            fecha_Matricula: {
+                required: true,
+                notFutureDate: true  // NUEVA VALIDACIÓN
+            },
+            Curso_Matricula: {
+                required: true
+            }
+        },
+        messages: {
+            Nombre: {
+                required: "Por favor ingrese el nombre",
+                lettersOnly: "El nombre solo debe contener letras"
+            },
+            identidad: {
+                required: "Por favor ingrese la cédula",
+                digits: "La cédula solo debe contener números",
+                minlength: "La cédula debe tener 10 dígitos",
+                maxlength: "La cédula debe tener 10 dígitos"
+            },
+            fecha_Matricula: {
+                required: "Por favor ingrese la fecha de matrícula",
+                notFutureDate: "La fecha debe ser actual a hoy"
+            },
+            Curso_Matricula: {
+                required: "Seleccione un curso"
+            }
+        },
+        errorClass: "text-danger",
+        errorElement: "small"
+    });
+
+});
+</script>
+
+
+
+
+{% endblock %}

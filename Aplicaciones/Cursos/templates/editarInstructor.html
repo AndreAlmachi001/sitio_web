@@ -1,0 +1,152 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+
+&nbsp;
+<br>
+&nbsp;
+<br>
+<div class="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="titlepage text_align_left">
+                    <h2>Editar Instructor</h2>
+                </div>
+
+                <form enctype="multipart/form-data"
+                      action="/actualizarInstructor/"
+                      method="post"
+                      id="frm_editar_instructor">
+
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ Instructor.id }}">
+
+                    <b>Cédula:</b><br>
+                    <input type="text" class="form-control"
+                           name="cedula"
+                           id="cedula"
+                           value="{{ Instructor.cedula }}">
+                    <br>
+
+                    <b>Apellidos:</b><br>
+                    <input type="text" class="form-control"
+                           name="apellidos"
+                           id="apellidos"
+                           value="{{ Instructor.apellidos }}">
+                    <br>
+
+                    <b>Nombres:</b><br>
+                    <input type="text" class="form-control"
+                           name="nombres"
+                           id="nombres"
+                           value="{{ Instructor.nombres }}">
+                    <br>
+
+                    <b>Título:</b><br>
+                    <input type="text" class="form-control"
+                           name="titulo"
+                           id="titulo"
+                           value="{{ Instructor.titulo }}">
+                    <br>
+
+                    <b>Foto:</b><br>
+                    <input type="file" class="form-control"
+                           name="foto"
+                           id="foto">
+                    <br>
+
+                    {% if Instructor.foto %}
+                        <div class="text-center">
+                            <img src="{{ Instructor.foto.url }}" width="120"
+                                 style="border-radius:50%; border:2px solid #20B2AA;">
+                        </div>
+                        <br>
+                    {% endif %}
+
+                    <div class="text-center">
+                        <button class="btn btn-dark" type="submit">
+                            <i class="fa fa-pencil"></i>
+                            Actualizar
+                        </button>
+                        <br><br>
+                        <a href="/indexInstructor" class="btn btn-dark">
+                            <i class="fa fa-times"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+
+    // SOLO LETRAS
+    $.validator.addMethod("lettersOnly", function (value, element) {
+        return this.optional(element) || /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(value);
+    });
+
+    // SOLO NÚMEROS
+    $.validator.addMethod("digitsOnly", function (value, element) {
+        return this.optional(element) || /^[0-9]+$/.test(value);
+    });
+
+    $("#frm_editar_instructor").validate({
+        rules: {
+            cedula: {
+                required: true,
+                digitsOnly: true,
+                minlength: 10,
+                maxlength: 10
+            },
+            apellidos: {
+                required: true,
+                lettersOnly: true
+            },
+            nombres: {
+                required: true,
+                lettersOnly: true
+            },
+            titulo: {
+                required: true
+            }
+        },
+        messages: {
+            cedula: {
+                required: "Ingrese la cédula",
+                digitsOnly: "Solo números",
+                minlength: "Debe tener 10 dígitos",
+                maxlength: "Debe tener 10 dígitos"
+            },
+            apellidos: {
+                required: "Ingrese los apellidos",
+                lettersOnly: "Solo letras"
+            },
+            nombres: {
+                required: "Ingrese los nombres",
+                lettersOnly: "Solo letras"
+            },
+            titulo: {
+                required: "Ingrese el título"
+            }
+        },
+        errorClass: "text-danger",
+        errorElement: "small"
+    });
+
+});
+</script>
+<script>
+        $("#foto").fileinput({
+                language: "es",
+                allowedFileExtensions:["png|jpg|jpeg"],
+                showCaption:false,
+                dropZoneEnabled:true,
+                showClose:false
+            });
+</script>
+
+{% endblock %}

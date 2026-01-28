@@ -1,0 +1,124 @@
+{% extends './plantilla.html' %}
+{% block contenido %}
+
+&nbsp;
+<br>
+&nbsp;
+<br>
+<div class="contact">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="titlepage text_align_left">
+                    <h2>Nuevo Instructor</h2>
+                </div>
+                <form enctype="multipart/form-data" action="{% url 'guardarInstructor' %}" method="post" id="frm_nuevo_instructor">
+                    {% csrf_token %}
+
+                    <b>Cédula:</b> <br>
+                    <input type="text" class="form-control"
+                           placeholder="Ingrese la cédula"
+                           name="cedula" id="cedula"> <br>
+
+                    <b>Apellidos:</b> <br>
+                    <input type="text" class="form-control"
+                           placeholder="Ingrese los apellidos"
+                           name="apellidos" id="apellidos"> <br>
+
+                    <b>Nombres:</b> <br>
+                    <input type="text" class="form-control"
+                           placeholder="Ingrese los nombres"
+                           name="nombres" id="nombres"> <br>
+
+                    <b>Título:</b> <br>
+                    <input type="text" class="form-control"
+                           placeholder="Ingrese el título"
+                           name="titulo" id="titulo"> <br>
+
+                    <b>Foto:</b> <br>
+                    <input type="file" class="form-control" name="foto" id="foto"> <br>
+
+                    <div class="text-center">
+                        <button class="btn btn-dark" type="submit">
+                            <i class="fa fa-pencil"></i>
+                            Guardar
+                        </button>
+                        <br><br>
+                        <a href="{% url 'indexInstructor' %}" class="btn btn-dark">
+                            <i class="fa fa-times"></i>
+                            Cancelar
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+
+    // MÉTODO PERSONALIZADO SOLO LETRAS
+    $.validator.addMethod("lettersOnly", function (value, element) {
+        return this.optional(element) || /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(value);
+    });
+
+    // MÉTODO PERSONALIZADO CÉDULA 10 DÍGITOS
+    $.validator.addMethod("cedulaValida", function (value, element) {
+        return this.optional(element) || /^\d{10}$/.test(value);
+    });
+
+    $("#frm_nuevo_instructor").validate({
+        rules: {
+            cedula: {
+                required: true,
+                cedulaValida: true
+            },
+            apellidos: {
+                required: true,
+                lettersOnly: true
+            },
+            nombres: {
+                required: true,
+                lettersOnly: true
+            },
+            titulo: {
+                required: true
+            }
+        },
+        messages: {
+            cedula: {
+                required: "Por favor ingrese la cédula",
+                cedulaValida: "La cédula debe tener 10 números"
+            },
+            apellidos: {
+                required: "Por favor ingrese los apellidos",
+                lettersOnly: "Los apellidos solo deben contener letras"
+            },
+            nombres: {
+                required: "Por favor ingrese los nombres",
+                lettersOnly: "Los nombres solo deben contener letras"
+            },
+            titulo: {
+                required: "Por favor ingrese el título"
+            }
+        },
+        errorClass: "text-danger",
+        errorElement: "small"
+    });
+
+});
+</script>
+
+<script>
+        $("#foto").fileinput({
+                language: "es",
+                allowedFileExtensions:["png|jpg|jpeg"],
+                showCaption:false,
+                dropZoneEnabled:true,
+                showClose:false
+            });
+</script>
+
+{% endblock %}
